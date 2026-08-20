@@ -270,6 +270,44 @@
         </button>
 
     </div>
+<!-- NEARBY HELP -->
+<div class="card">
+
+    <h2>🏥 Nearby Emergency Help</h2>
+
+    <p class="small">
+        Find emergency facilities near your current location.
+    </p>
+
+    <div class="types">
+
+        <button class="type-button"
+                onclick="findNearby('hospital')">
+            🏥 Hospitals
+        </button>
+
+        <button class="type-button"
+                onclick="findNearby('urgent care')">
+            🚑 Urgent Care
+        </button>
+
+        <button class="type-button"
+                onclick="findNearby('police station')">
+            👮 Police
+        </button>
+
+        <button class="type-button"
+                onclick="findNearby('fire station')">
+            🚒 Fire Station
+        </button>
+
+    </div>
+
+    <div id="nearbyStatus" class="location-box">
+        Select a service above.
+    </div>
+
+</div>
 
 
     <!-- TRUSTED CONTACT -->
@@ -433,6 +471,46 @@ function getLocation() {
 // -------------------------
 // OPEN MAP
 // -------------------------
+// -------------------------
+// FIND NEARBY HELP
+// -------------------------
+
+function findNearby(service) {
+
+    const status =
+        document.getElementById("nearbyStatus");
+
+    if (latitude === null || longitude === null) {
+
+        status.innerHTML =
+            "📍 Please detect your location first.";
+
+        getLocation();
+
+        return;
+    }
+
+    status.innerHTML =
+        "🔎 Finding nearby " +
+        service +
+        "...";
+
+    const mapUrl =
+        "https://www.google.com/maps/search/" +
+        encodeURIComponent(service) +
+        "/@" +
+        latitude +
+        "," +
+        longitude +
+        ",14z";
+
+    status.innerHTML =
+        "✅ Opening nearby " +
+        service +
+        " in Maps...";
+
+    window.open(mapUrl, "_blank");
+}
 
 function openMap() {
 
