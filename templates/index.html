@@ -1,759 +1,438 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafePulse - Emergency Response</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-        body {
-            min-height: 100vh;
-            background: #f4f7fb;
-            color: #172033;
-        }
+    <title>SafePulse — Emergency Smart Response</title>
 
-        header {
-            background: #111827;
-            color: white;
-            padding: 22px;
-            text-align: center;
-        }
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
 
-        header h1 {
-            font-size: 30px;
-        }
-
-        header p {
-            margin-top: 6px;
-            color: #cbd5e1;
-        }
-
-        .container {
-            max-width: 950px;
-            margin: 30px auto;
-            padding: 20px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 18px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
-        }
-
-        .emergency-card {
-            text-align: center;
-        }
-
-        .status {
-            display: none;
-            background: #fee2e2;
-            color: #991b1b;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .emergency-button {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            border: none;
-            background: #dc2626;
-            color: white;
-            font-size: 21px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 25px auto;
-            display: block;
-            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
-        }
-
-        .emergency-button:active {
-            transform: scale(0.96);
-        }
-
-        .types {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            margin: 20px 0;
-        }
-
-        .type-button {
-            border: 1px solid #d1d5db;
-            background: white;
-            padding: 12px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 15px;
-        }
-
-        .type-button:hover {
-            background: #f3f4f6;
-        }
-
-        textarea,
-        input {
-            width: 100%;
-            padding: 13px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        button {
-            transition: 0.15s;
-        }
-
-        .primary-button {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
-            background: #111827;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 12px;
-        }
-
-        .primary-button:hover {
-            background: #374151;
-        }
-
-        .location-box {
-            background: #eff6ff;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-            line-height: 1.7;
-        }
-
-        .contact-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .alert-preview {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            white-space: pre-wrap;
-            line-height: 1.6;
-        }
-
-        .share-button {
-            background: #2563eb;
-        }
-
-        .response {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            background: #f1f5f9;
-            border-radius: 12px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-
-        .small {
-            color: #64748b;
-            font-size: 14px;
-            margin-top: 8px;
-        }
-
-        @media (max-width: 600px) {
-            .contact-row {
-                grid-template-columns: 1fr;
-            }
-
-            .emergency-button {
-                width: 150px;
-                height: 150px;
-            }
-        }
-    </style>
 </head>
+
 
 <body>
 
 <header>
-    <h1>🚨 SafePulse</h1>
-    <p>Emergency Smart Response</p>
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            🚨
+        </div>
+
+        <div>
+
+            <h1>SafePulse</h1>
+
+            <p>Emergency Smart Response</p>
+
+        </div>
+
+    </div>
+
+
+    <div class="system-status">
+
+        <span class="status-dot"></span>
+
+        System Ready
+
+    </div>
+
 </header>
 
-<div class="container">
+
+<main class="container">
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <h2>Emergency assistance, when you need it.</h2>
+
+        <p>
+            Get location support, emergency guidance,
+            trusted-contact alerts and nearby help.
+        </p>
+
+    </section>
+
+
 
     <!-- EMERGENCY -->
-    <div class="card emergency-card">
 
-        <div id="status" class="status">
+    <section class="emergency-card">
+
+        <div id="status"
+             class="status">
+
             🚨 EMERGENCY MODE ACTIVE
+
         </div>
+
 
         <h2>Are you in an emergency?</h2>
 
-        <button class="emergency-button" onclick="startEmergency()">
-            🚨<br>
+        <p class="small">
+
+            If this is a serious emergency,
+            contact your local emergency services immediately.
+
+        </p>
+
+
+        <button class="emergency-button"
+                onclick="startEmergency()">
+
+            🚨
+            <br>
+
             EMERGENCY
+
         </button>
+
 
         <div class="types">
-            <button class="type-button" onclick="selectType('Medical emergency')">
+
+            <button class="type-button"
+                    onclick="selectType('Medical emergency')">
+
                 🚑 Medical
+
             </button>
 
-            <button class="type-button" onclick="selectType('Accident')">
+
+            <button class="type-button"
+                    onclick="selectType('Accident')">
+
                 🚗 Accident
+
             </button>
 
-            <button class="type-button" onclick="selectType('Fire emergency')">
+
+            <button class="type-button"
+                    onclick="selectType('Fire emergency')">
+
                 🔥 Fire
+
             </button>
 
-            <button class="type-button" onclick="selectType('Personal safety emergency')">
+
+            <button class="type-button"
+                    onclick="selectType('Personal safety emergency')">
+
                 ⚠️ Safety
+
             </button>
-        </div>
-
-        <textarea id="situation"
-            placeholder="Describe what happened..."></textarea>
-
-        <button class="primary-button" onclick="askAI()">
-            🤖 Get Emergency Guidance
-        </button>
-
-        <div id="response" class="response"></div>
-
-    </div>
-
-
-    <!-- LOCATION -->
-    <div class="card">
-
-        <h2>📍 Emergency Location</h2>
-
-        <div id="location" class="location-box">
-            Location has not been detected yet.
-        </div>
-
-        <button class="primary-button"
-                onclick="getLocation()">
-            📍 Detect My Location
-        </button>
-
-        <button id="mapButton"
-                class="primary-button"
-                style="display:none;"
-                onclick="openMap()">
-            🗺️ Open Location in Maps
-        </button>
-
-    </div>
-<!-- NEARBY HELP -->
-<div class="card">
-
-    <h2>🏥 Nearby Emergency Help</h2>
-
-    <p class="small">
-        Find emergency facilities near your current location.
-    </p>
-
-    <div class="types">
-
-        <button class="type-button"
-                onclick="findNearby('hospital')">
-            🏥 Hospitals
-        </button>
-
-        <button class="type-button"
-                onclick="findNearby('urgent care')">
-            🚑 Urgent Care
-        </button>
-
-        <button class="type-button"
-                onclick="findNearby('police station')">
-            👮 Police
-        </button>
-
-        <button class="type-button"
-                onclick="findNearby('fire station')">
-            🚒 Fire Station
-        </button>
-
-    </div>
-
-    <div id="nearbyStatus" class="location-box">
-        Select a service above.
-    </div>
-
-</div>
-
-
-    <!-- TRUSTED CONTACT -->
-    <div class="card">
-
-        <h2>👥 Trusted Emergency Contact</h2>
-
-        <p class="small">
-            Add someone you trust. The information is stored only in this browser.
-        </p>
-
-        <div class="contact-row">
-
-            <input
-                id="contactName"
-                type="text"
-                placeholder="Contact name">
-
-            <input
-                id="contactPhone"
-                type="tel"
-                placeholder="Phone number">
 
         </div>
 
-        <button class="primary-button"
-                onclick="saveContact()">
-            💾 Save Trusted Contact
-        </button>
-
-        <div id="savedContact" class="small"></div>
-
-    </div>
+    </section>
 
 
-    <!-- ALERT -->
-    <div class="card">
 
-        <h2>📢 Emergency Alert</h2>
+    <!-- MAIN GRID -->
 
-        <p class="small">
-            SafePulse will prepare an alert using your emergency type and location.
-        </p>
+    <section class="card-grid">
 
-        <div id="alertPreview" class="alert-preview">
-            No alert prepared yet.
+
+        <!-- AI -->
+
+        <div class="card">
+
+            <div class="icon-title">
+
+                <div class="card-icon">
+                    🤖
+                </div>
+
+                <div>
+
+                    <h2>AI Emergency Assistant</h2>
+
+                    <p class="card-description">
+                        Powered locally by Ollama
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <textarea
+                id="situation"
+                placeholder="Describe what happened...">
+            </textarea>
+
+
+            <button class="primary-button"
+                    onclick="askAI()">
+
+                🤖 Get Emergency Guidance
+
+            </button>
+
+
+            <div id="response"
+                 class="response">
+
+            </div>
+
+
+            <div class="safety-note">
+
+                ⚠️ AI guidance is supplementary.
+                It does not replace professional emergency care.
+
+            </div>
+
         </div>
 
-        <button class="primary-button share-button"
-                onclick="shareAlert()">
-            📲 Share Emergency Alert
-        </button>
 
-    </div>
 
-</div>
+        <!-- LOCATION -->
 
+        <div class="card">
 
-<script>
+            <div class="icon-title">
 
-let latitude = null;
-let longitude = null;
-let selectedType = "General emergency";
+                <div class="card-icon">
+                    📍
+                </div>
 
+                <div>
 
-// -------------------------
-// EMERGENCY MODE
-// -------------------------
+                    <h2>Your Location</h2>
 
-function startEmergency() {
+                    <p class="card-description">
+                        Used to help identify where you are
+                    </p>
 
-    document.getElementById("status").style.display = "block";
+                </div>
 
-    document.getElementById("situation").value =
-        "I am experiencing an emergency. Please provide immediate general safety guidance.";
+            </div>
 
-    getLocation();
 
-    updateAlert();
+            <div id="location"
+                 class="location-box">
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
+                Location has not been detected yet.
 
+            </div>
 
-// -------------------------
-// EMERGENCY TYPE
-// -------------------------
 
-function selectType(type) {
+            <button class="primary-button"
+                    onclick="getLocation()">
 
-    selectedType = type;
+                📍 Detect My Location
 
-    document.getElementById("situation").value =
-        "This is a " + type +
-        ". Please provide immediate general safety guidance.";
+            </button>
 
-    getLocation();
 
-    updateAlert();
-}
+            <button id="mapButton"
+                    class="primary-button"
+                    style="display:none;"
+                    onclick="openMap()">
 
+                🗺️ Open Location in Maps
 
-// -------------------------
-// LOCATION
-// -------------------------
+            </button>
 
-function getLocation() {
+        </div>
 
-    const locationBox =
-        document.getElementById("location");
 
-    locationBox.innerHTML =
-        "📍 Detecting your location...";
 
-    if (!navigator.geolocation) {
+        <!-- NEARBY HELP -->
 
-        locationBox.innerHTML =
-            "❌ Location services are not supported by this browser.";
+        <div class="card">
 
-        return;
-    }
+            <div class="icon-title">
 
-    navigator.geolocation.getCurrentPosition(
+                <div class="card-icon red">
+                    🏥
+                </div>
 
-        function(position) {
+                <div>
 
-            latitude =
-                position.coords.latitude;
+                    <h2>Nearby Emergency Help</h2>
 
-            longitude =
-                position.coords.longitude;
+                    <p class="card-description">
+                        Find emergency facilities nearby
+                    </p>
 
-            locationBox.innerHTML =
-                "✅ Location detected<br>" +
-                "Latitude: " +
-                latitude.toFixed(5) +
-                "<br>" +
-                "Longitude: " +
-                longitude.toFixed(5);
+                </div>
 
-            document.getElementById("mapButton")
-                .style.display = "block";
+            </div>
 
-            updateAlert();
-        },
 
-        function(error) {
+            <div class="types">
 
-            locationBox.innerHTML =
-                "❌ Unable to access your location.<br>" +
-                "Please allow location permission in your browser.";
+                <button class="type-button"
+                        onclick="findNearby('hospital')">
 
-        }
-    );
-}
+                    🏥 Hospitals
 
+                </button>
 
-// -------------------------
-// OPEN MAP
-// -------------------------
-// -------------------------
-// FIND NEARBY HELP
-// -------------------------
 
-function findNearby(service) {
+                <button class="type-button"
+                        onclick="findNearby('urgent care')">
 
-    const status =
-        document.getElementById("nearbyStatus");
+                    🚑 Urgent Care
 
-    if (latitude === null || longitude === null) {
+                </button>
 
-        status.innerHTML =
-            "📍 Please detect your location first.";
 
-        getLocation();
+                <button class="type-button"
+                        onclick="findNearby('police station')">
 
-        return;
-    }
+                    👮 Police
 
-    status.innerHTML =
-        "🔎 Finding nearby " +
-        service +
-        "...";
+                </button>
 
-    const mapUrl =
-        "https://www.google.com/maps/search/" +
-        encodeURIComponent(service) +
-        "/@" +
-        latitude +
-        "," +
-        longitude +
-        ",14z";
 
-    status.innerHTML =
-        "✅ Opening nearby " +
-        service +
-        " in Maps...";
+                <button class="type-button"
+                        onclick="findNearby('fire station')">
 
-    window.open(mapUrl, "_blank");
-}
+                    🚒 Fire Station
 
-function openMap() {
+                </button>
 
-    if (latitude === null || longitude === null) {
-        alert("Please detect your location first.");
-        return;
-    }
+            </div>
 
-    const mapUrl =
-        "https://www.google.com/maps?q=" +
-        latitude +
-        "," +
-        longitude;
 
-    window.open(mapUrl, "_blank");
-}
+            <div id="nearbyStatus"
+                 class="location-box">
 
+                Select a service above.
 
-// -------------------------
-// TRUSTED CONTACT
-// -------------------------
+            </div>
 
-function saveContact() {
+        </div>
 
-    const name =
-        document.getElementById("contactName")
-            .value.trim();
 
-    const phone =
-        document.getElementById("contactPhone")
-            .value.trim();
 
-    if (!name || !phone) {
+        <!-- TRUSTED CONTACT -->
 
-        alert("Please enter both the name and phone number.");
+        <div class="card">
 
-        return;
-    }
+            <div class="icon-title">
 
-    localStorage.setItem(
-        "safePulseContactName",
-        name
-    );
+                <div class="card-icon green">
+                    👥
+                </div>
 
-    localStorage.setItem(
-        "safePulseContactPhone",
-        phone
-    );
+                <div>
 
-    displayContact();
+                    <h2>Trusted Contact</h2>
 
-    updateAlert();
-}
+                    <p class="card-description">
+                        Someone you trust in an emergency
+                    </p>
 
+                </div>
 
-function displayContact() {
+            </div>
 
-    const name =
-        localStorage.getItem(
-            "safePulseContactName"
-        );
 
-    const phone =
-        localStorage.getItem(
-            "safePulseContactPhone"
-        );
+            <div class="contact-row">
 
-    if (name && phone) {
+                <input
+                    id="contactName"
+                    type="text"
+                    placeholder="Contact name">
 
-        document.getElementById("contactName")
-            .value = name;
 
-        document.getElementById("contactPhone")
-            .value = phone;
+                <input
+                    id="contactPhone"
+                    type="tel"
+                    placeholder="Phone number">
 
-        document.getElementById("savedContact")
-            .innerText =
-            "✅ Trusted contact saved: " +
-            name +
-            " (" +
-            phone +
-            ")";
-    }
-}
+            </div>
 
 
-// -------------------------
-// ALERT MESSAGE
-// -------------------------
+            <button class="primary-button"
+                    onclick="saveContact()">
 
-function updateAlert() {
+                💾 Save Trusted Contact
 
-    const name =
-        localStorage.getItem(
-            "safePulseContactName"
-        ) || "Trusted contact";
+            </button>
 
-    let locationText =
-        "Location not detected.";
 
-    if (latitude !== null && longitude !== null) {
+            <div id="savedContact"
+                 class="small">
 
-        locationText =
-            "https://www.google.com/maps?q=" +
-            latitude +
-            "," +
-            longitude;
-    }
+            </div>
 
-    const message =
-        "🚨 SAFEPULSE EMERGENCY ALERT\n\n" +
-        "Emergency type: " +
-        selectedType +
-        "\n\n" +
-        "Location:\n" +
-        locationText +
-        "\n\n" +
-        "Please contact me immediately.\n\n" +
-        "Sent using SafePulse.";
+        </div>
 
-    document.getElementById("alertPreview")
-        .innerText = message;
-}
 
 
-// -------------------------
-// SHARE ALERT
-// -------------------------
+        <!-- ALERT -->
 
-async function shareAlert() {
+        <div class="card">
 
-    updateAlert();
+            <div class="icon-title">
 
-    const message =
-        document.getElementById("alertPreview")
-            .innerText;
+                <div class="card-icon orange">
+                    📢
+                </div>
 
-    if (navigator.share) {
+                <div>
 
-        try {
+                    <h2>Emergency Alert</h2>
 
-            await navigator.share({
-                title: "SafePulse Emergency Alert",
-                text: message
-            });
+                    <p class="card-description">
+                        Prepare and share an emergency message
+                    </p>
 
-        } catch (error) {
+                </div>
 
-            console.log("Share cancelled.");
-        }
+            </div>
 
-    } else {
 
-        try {
+            <div id="alertPreview"
+                 class="alert-preview">
 
-            await navigator.clipboard.writeText(message);
+                No alert prepared yet.
 
-            alert(
-                "Emergency alert copied to clipboard. " +
-                "You can paste it into your messaging app."
-            );
+            </div>
 
-        } catch (error) {
 
-            alert(message);
-        }
-    }
-}
+            <button class="primary-button share-button"
+                    onclick="shareAlert()">
 
+                📲 Share Emergency Alert
 
-// -------------------------
-// OLLAMA AI
-// -------------------------
+            </button>
 
-async function askAI() {
+        </div>
 
-    const situation =
-        document.getElementById("situation")
-            .value.trim();
+    </section>
 
-    const responseBox =
-        document.getElementById("response");
 
-    if (!situation) {
+    <footer>
 
-        alert(
-            "Please describe the emergency first."
-        );
+        SafePulse • Emergency Smart Response
 
-        return;
-    }
+        <br>
 
-    responseBox.style.display = "block";
+        Prototype for Build Beyond Hackathon
 
-    responseBox.innerText =
-        "🤖 SafePulse AI is thinking...";
+    </footer>
 
-    try {
+</main>
 
-        const response =
-            await fetch("/ask-ai", {
 
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    situation: situation
-                })
-            });
-
-        const data =
-            await response.json();
-
-        if (data.error) {
-
-            responseBox.innerText =
-                "❌ " + data.error;
-
-            return;
-        }
-
-        responseBox.innerText =
-            "🤖 SafePulse AI\n\n" +
-            data.answer;
-
-    } catch (error) {
-
-        responseBox.innerText =
-            "❌ Could not connect to SafePulse.";
-    }
-}
-
-
-// -------------------------
-// LOAD SAVED CONTACT
-// -------------------------
-
-displayContact();
-
-</script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
+
 </html>
