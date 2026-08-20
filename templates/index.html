@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>SafePulse - Emergency Response</title>
 
     <style>
@@ -16,19 +15,19 @@
 
         body {
             min-height: 100vh;
-            background: #f5f7fb;
-            color: #1f2937;
+            background: #f4f7fb;
+            color: #172033;
         }
 
         header {
             background: #111827;
             color: white;
-            padding: 20px;
+            padding: 22px;
             text-align: center;
         }
 
         header h1 {
-            font-size: 28px;
+            font-size: 30px;
         }
 
         header p {
@@ -37,17 +36,31 @@
         }
 
         .container {
-            max-width: 900px;
-            margin: 35px auto;
+            max-width: 950px;
+            margin: 30px auto;
             padding: 20px;
         }
 
-        .emergency-card {
+        .card {
             background: white;
-            border-radius: 20px;
-            padding: 35px;
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .emergency-card {
             text-align: center;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .status {
+            display: none;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: bold;
         }
 
         .emergency-button {
@@ -57,24 +70,24 @@
             border: none;
             background: #dc2626;
             color: white;
-            font-size: 22px;
+            font-size: 21px;
             font-weight: bold;
             cursor: pointer;
             margin: 25px auto;
             display: block;
-            box-shadow: 0 10px 25px rgba(220,38,38,0.3);
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
         }
 
-        .emergency-button:hover {
-            transform: scale(1.03);
+        .emergency-button:active {
+            transform: scale(0.96);
         }
 
         .types {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
             justify-content: center;
-            margin: 25px 0;
+            margin: 20px 0;
         }
 
         .type-button {
@@ -83,55 +96,101 @@
             padding: 12px 18px;
             border-radius: 10px;
             cursor: pointer;
+            font-size: 15px;
         }
 
         .type-button:hover {
             background: #f3f4f6;
         }
 
-        textarea {
+        textarea,
+        input {
             width: 100%;
-            min-height: 120px;
-            margin-top: 20px;
-            padding: 15px;
+            padding: 13px;
             border: 1px solid #d1d5db;
-            border-radius: 12px;
-            resize: vertical;
+            border-radius: 10px;
             font-size: 16px;
+            margin-top: 10px;
         }
 
-        .ask-button {
-            margin-top: 15px;
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        button {
+            transition: 0.15s;
+        }
+
+        .primary-button {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             border: none;
             border-radius: 10px;
             background: #111827;
             color: white;
-            font-size: 17px;
+            font-size: 16px;
             cursor: pointer;
+            margin-top: 12px;
         }
 
-        .ask-button:hover {
+        .primary-button:hover {
             background: #374151;
         }
 
-        .response {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 12px;
-            background: #f1f5f9;
-            text-align: left;
-            white-space: pre-wrap;
-            line-height: 1.6;
-            display: none;
+        .location-box {
+            background: #eff6ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            line-height: 1.7;
         }
 
-        .location {
-            margin-top: 20px;
-            padding: 15px;
-            background: #eff6ff;
+        .contact-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .alert-preview {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .share-button {
+            background: #2563eb;
+        }
+
+        .response {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .small {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .contact-row {
+                grid-template-columns: 1fr;
+            }
+
+            .emergency-button {
+                width: 150px;
+                height: 150px;
+            }
         }
     </style>
 </head>
@@ -145,7 +204,12 @@
 
 <div class="container">
 
-    <div class="emergency-card">
+    <!-- EMERGENCY -->
+    <div class="card emergency-card">
+
+        <div id="status" class="status">
+            🚨 EMERGENCY MODE ACTIVE
+        </div>
 
         <h2>Are you in an emergency?</h2>
 
@@ -155,117 +219,408 @@
         </button>
 
         <div class="types">
-
-            <button class="type-button"
-                    onclick="selectType('Medical emergency')">
+            <button class="type-button" onclick="selectType('Medical emergency')">
                 🚑 Medical
             </button>
 
-            <button class="type-button"
-                    onclick="selectType('Accident')">
+            <button class="type-button" onclick="selectType('Accident')">
                 🚗 Accident
             </button>
 
-            <button class="type-button"
-                    onclick="selectType('Fire emergency')">
+            <button class="type-button" onclick="selectType('Fire emergency')">
                 🔥 Fire
             </button>
 
-            <button class="type-button"
-                    onclick="selectType('Personal safety emergency')">
+            <button class="type-button" onclick="selectType('Personal safety emergency')">
                 ⚠️ Safety
             </button>
-
         </div>
 
         <textarea id="situation"
-                  placeholder="Describe what happened..."></textarea>
+            placeholder="Describe what happened..."></textarea>
 
-        <button class="ask-button" onclick="askAI()">
+        <button class="primary-button" onclick="askAI()">
             🤖 Get Emergency Guidance
         </button>
 
         <div id="response" class="response"></div>
 
-        <div id="location" class="location">
-            📍 Location: Not detected
+    </div>
+
+
+    <!-- LOCATION -->
+    <div class="card">
+
+        <h2>📍 Emergency Location</h2>
+
+        <div id="location" class="location-box">
+            Location has not been detected yet.
         </div>
+
+        <button class="primary-button"
+                onclick="getLocation()">
+            📍 Detect My Location
+        </button>
+
+        <button id="mapButton"
+                class="primary-button"
+                style="display:none;"
+                onclick="openMap()">
+            🗺️ Open Location in Maps
+        </button>
+
+    </div>
+
+
+    <!-- TRUSTED CONTACT -->
+    <div class="card">
+
+        <h2>👥 Trusted Emergency Contact</h2>
+
+        <p class="small">
+            Add someone you trust. The information is stored only in this browser.
+        </p>
+
+        <div class="contact-row">
+
+            <input
+                id="contactName"
+                type="text"
+                placeholder="Contact name">
+
+            <input
+                id="contactPhone"
+                type="tel"
+                placeholder="Phone number">
+
+        </div>
+
+        <button class="primary-button"
+                onclick="saveContact()">
+            💾 Save Trusted Contact
+        </button>
+
+        <div id="savedContact" class="small"></div>
+
+    </div>
+
+
+    <!-- ALERT -->
+    <div class="card">
+
+        <h2>📢 Emergency Alert</h2>
+
+        <p class="small">
+            SafePulse will prepare an alert using your emergency type and location.
+        </p>
+
+        <div id="alertPreview" class="alert-preview">
+            No alert prepared yet.
+        </div>
+
+        <button class="primary-button share-button"
+                onclick="shareAlert()">
+            📲 Share Emergency Alert
+        </button>
 
     </div>
 
 </div>
 
+
 <script>
+
+let latitude = null;
+let longitude = null;
+let selectedType = "General emergency";
+
+
+// -------------------------
+// EMERGENCY MODE
+// -------------------------
 
 function startEmergency() {
 
-    alert(
-        "🚨 Emergency mode activated.\n\n" +
-        "If this is a serious emergency, contact your local emergency services immediately."
-    );
+    document.getElementById("status").style.display = "block";
+
+    document.getElementById("situation").value =
+        "I am experiencing an emergency. Please provide immediate general safety guidance.";
 
     getLocation();
+
+    updateAlert();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 
+
+// -------------------------
+// EMERGENCY TYPE
+// -------------------------
 
 function selectType(type) {
 
+    selectedType = type;
+
     document.getElementById("situation").value =
-        "This is a " + type + ". Please provide immediate general guidance.";
+        "This is a " + type +
+        ". Please provide immediate general safety guidance.";
 
     getLocation();
+
+    updateAlert();
 }
 
 
+// -------------------------
+// LOCATION
+// -------------------------
+
 function getLocation() {
 
-    const locationBox = document.getElementById("location");
+    const locationBox =
+        document.getElementById("location");
+
+    locationBox.innerHTML =
+        "📍 Detecting your location...";
 
     if (!navigator.geolocation) {
 
-        locationBox.innerText =
-            "📍 Location services are not supported by this browser.";
+        locationBox.innerHTML =
+            "❌ Location services are not supported by this browser.";
 
         return;
     }
-
-    locationBox.innerText =
-        "📍 Detecting your location...";
 
     navigator.geolocation.getCurrentPosition(
 
         function(position) {
 
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
+            latitude =
+                position.coords.latitude;
+
+            longitude =
+                position.coords.longitude;
 
             locationBox.innerHTML =
-                "📍 Location detected<br>" +
-                "Latitude: " + lat.toFixed(5) +
+                "✅ Location detected<br>" +
+                "Latitude: " +
+                latitude.toFixed(5) +
                 "<br>" +
-                "Longitude: " + lon.toFixed(5);
+                "Longitude: " +
+                longitude.toFixed(5);
+
+            document.getElementById("mapButton")
+                .style.display = "block";
+
+            updateAlert();
         },
 
-        function() {
+        function(error) {
 
-            locationBox.innerText =
-                "📍 Unable to access location.";
+            locationBox.innerHTML =
+                "❌ Unable to access your location.<br>" +
+                "Please allow location permission in your browser.";
+
         }
     );
 }
 
 
+// -------------------------
+// OPEN MAP
+// -------------------------
+
+function openMap() {
+
+    if (latitude === null || longitude === null) {
+        alert("Please detect your location first.");
+        return;
+    }
+
+    const mapUrl =
+        "https://www.google.com/maps?q=" +
+        latitude +
+        "," +
+        longitude;
+
+    window.open(mapUrl, "_blank");
+}
+
+
+// -------------------------
+// TRUSTED CONTACT
+// -------------------------
+
+function saveContact() {
+
+    const name =
+        document.getElementById("contactName")
+            .value.trim();
+
+    const phone =
+        document.getElementById("contactPhone")
+            .value.trim();
+
+    if (!name || !phone) {
+
+        alert("Please enter both the name and phone number.");
+
+        return;
+    }
+
+    localStorage.setItem(
+        "safePulseContactName",
+        name
+    );
+
+    localStorage.setItem(
+        "safePulseContactPhone",
+        phone
+    );
+
+    displayContact();
+
+    updateAlert();
+}
+
+
+function displayContact() {
+
+    const name =
+        localStorage.getItem(
+            "safePulseContactName"
+        );
+
+    const phone =
+        localStorage.getItem(
+            "safePulseContactPhone"
+        );
+
+    if (name && phone) {
+
+        document.getElementById("contactName")
+            .value = name;
+
+        document.getElementById("contactPhone")
+            .value = phone;
+
+        document.getElementById("savedContact")
+            .innerText =
+            "✅ Trusted contact saved: " +
+            name +
+            " (" +
+            phone +
+            ")";
+    }
+}
+
+
+// -------------------------
+// ALERT MESSAGE
+// -------------------------
+
+function updateAlert() {
+
+    const name =
+        localStorage.getItem(
+            "safePulseContactName"
+        ) || "Trusted contact";
+
+    let locationText =
+        "Location not detected.";
+
+    if (latitude !== null && longitude !== null) {
+
+        locationText =
+            "https://www.google.com/maps?q=" +
+            latitude +
+            "," +
+            longitude;
+    }
+
+    const message =
+        "🚨 SAFEPULSE EMERGENCY ALERT\n\n" +
+        "Emergency type: " +
+        selectedType +
+        "\n\n" +
+        "Location:\n" +
+        locationText +
+        "\n\n" +
+        "Please contact me immediately.\n\n" +
+        "Sent using SafePulse.";
+
+    document.getElementById("alertPreview")
+        .innerText = message;
+}
+
+
+// -------------------------
+// SHARE ALERT
+// -------------------------
+
+async function shareAlert() {
+
+    updateAlert();
+
+    const message =
+        document.getElementById("alertPreview")
+            .innerText;
+
+    if (navigator.share) {
+
+        try {
+
+            await navigator.share({
+                title: "SafePulse Emergency Alert",
+                text: message
+            });
+
+        } catch (error) {
+
+            console.log("Share cancelled.");
+        }
+
+    } else {
+
+        try {
+
+            await navigator.clipboard.writeText(message);
+
+            alert(
+                "Emergency alert copied to clipboard. " +
+                "You can paste it into your messaging app."
+            );
+
+        } catch (error) {
+
+            alert(message);
+        }
+    }
+}
+
+
+// -------------------------
+// OLLAMA AI
+// -------------------------
+
 async function askAI() {
 
     const situation =
-        document.getElementById("situation").value.trim();
+        document.getElementById("situation")
+            .value.trim();
 
     const responseBox =
         document.getElementById("response");
 
     if (!situation) {
 
-        alert("Please describe the emergency first.");
+        alert(
+            "Please describe the emergency first."
+        );
 
         return;
     }
@@ -277,20 +632,22 @@ async function askAI() {
 
     try {
 
-        const response = await fetch("/ask-ai", {
+        const response =
+            await fetch("/ask-ai", {
 
-            method: "POST",
+                method: "POST",
 
-            headers: {
-                "Content-Type": "application/json"
-            },
+                headers: {
+                    "Content-Type": "application/json"
+                },
 
-            body: JSON.stringify({
-                situation: situation
-            })
-        });
+                body: JSON.stringify({
+                    situation: situation
+                })
+            });
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
         if (data.error) {
 
@@ -310,6 +667,13 @@ async function askAI() {
             "❌ Could not connect to SafePulse.";
     }
 }
+
+
+// -------------------------
+// LOAD SAVED CONTACT
+// -------------------------
+
+displayContact();
 
 </script>
 
