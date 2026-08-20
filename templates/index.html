@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SafePulse - Emergency Response</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 28px;
+        }
+
+        header p {
+            margin-top: 6px;
+            color: #cbd5e1;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .emergency-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .emergency-button {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: none;
+            background: #dc2626;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 25px auto;
+            display: block;
+            box-shadow: 0 10px 25px rgba(220,38,38,0.3);
+        }
+
+        .emergency-button:hover {
+            transform: scale(1.03);
+        }
+
+        .types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin: 25px 0;
+        }
+
+        .type-button {
+            border: 1px solid #d1d5db;
+            background: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .type-button:hover {
+            background: #f3f4f6;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            resize: vertical;
+            font-size: 16px;
+        }
+
+        .ask-button {
+            margin-top: 15px;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #111827;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .ask-button:hover {
+            background: #374151;
+        }
+
+        .response {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            background: #f1f5f9;
+            text-align: left;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .location {
+            margin-top: 20px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🚨 SafePulse</h1>
+    <p>Emergency Smart Response</p>
+</header>
+
+<div class="container">
+
+    <div class="emergency-card">
+
+        <h2>Are you in an emergency?</h2>
+
+        <button class="emergency-button" onclick="startEmergency()">
+            🚨<br>
+            EMERGENCY
+        </button>
+
+        <div class="types">
+
+            <button class="type-button"
+                    onclick="selectType('Medical emergency')">
+                🚑 Medical
+            </button>
+
+            <button class="type-button"
+                    onclick="selectType('Accident')">
+                🚗 Accident
+            </button>
+
+            <button class="type-button"
+                    onclick="selectType('Fire emergency')">
+                🔥 Fire
+            </button>
+
+            <button class="type-button"
+                    onclick="selectType('Personal safety emergency')">
+                ⚠️ Safety
+            </button>
+
+        </div>
+
+        <textarea id="situation"
+                  placeholder="Describe what happened..."></textarea>
+
+        <button class="ask-button" onclick="askAI()">
+            🤖 Get Emergency Guidance
+        </button>
+
+        <div id="response" class="response"></div>
+
+        <div id="location" class="location">
+            📍 Location: Not detected
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function startEmergency() {
+
+    alert(
+        "🚨 Emergency mode activated.\n\n" +
+        "If this is a serious emergency, contact your local emergency services immediately."
+    );
+
+    getLocation();
+}
+
+
+function selectType(type) {
+
+    document.getElementById("situation").value =
+        "This is a " + type + ". Please provide immediate general guidance.";
+
+    getLocation();
+}
+
+
+function getLocation() {
+
+    const locationBox = document.getElementById("location");
+
+    if (!navigator.geolocation) {
+
+        locationBox.innerText =
+            "📍 Location services are not supported by this browser.";
+
+        return;
+    }
+
+    locationBox.innerText =
+        "📍 Detecting your location...";
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            locationBox.innerHTML =
+                "📍 Location detected<br>" +
+                "Latitude: " + lat.toFixed(5) +
+                "<br>" +
+                "Longitude: " + lon.toFixed(5);
+        },
+
+        function() {
+
+            locationBox.innerText =
+                "📍 Unable to access location.";
+        }
+    );
+}
+
+
+async function askAI() {
+
+    const situation =
+        document.getElementById("situation").value.trim();
+
+    const responseBox =
+        document.getElementById("response");
+
+    if (!situation) {
+
+        alert("Please describe the emergency first.");
+
+        return;
+    }
+
+    responseBox.style.display = "block";
+
+    responseBox.innerText =
+        "🤖 SafePulse AI is thinking...";
+
+    try {
+
+        const response = await fetch("/ask-ai", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                situation: situation
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+
+            responseBox.innerText =
+                "❌ " + data.error;
+
+            return;
+        }
+
+        responseBox.innerText =
+            "🤖 SafePulse AI\n\n" +
+            data.answer;
+
+    } catch (error) {
+
+        responseBox.innerText =
+            "❌ Could not connect to SafePulse.";
+    }
+}
+
+</script>
+
+</body>
+</html>
