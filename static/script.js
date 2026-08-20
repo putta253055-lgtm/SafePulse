@@ -305,7 +305,7 @@ async function shareAlert() {
 
 
 // -------------------------
-// OLLAMA AI
+// SAFE PULSE EMERGENCY GUIDANCE
 // -------------------------
 
 async function askAI() {
@@ -329,44 +329,93 @@ async function askAI() {
     responseBox.style.display = "block";
 
     responseBox.innerText =
-        "🤖 SafePulse AI is thinking...";
+        "🤖 SafePulse is preparing emergency guidance...";
 
-    try {
+    await new Promise(resolve =>
+        setTimeout(resolve, 500)
+    );
 
-        const response =
-            await fetch("/ask-ai", {
+    const text =
+        situation.toLowerCase();
 
-                method: "POST",
+    let guidance = "";
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+    if (
+        text.includes("medical") ||
+        text.includes("injury") ||
+        text.includes("bleeding") ||
+        text.includes("unconscious") ||
+        text.includes("heart")
+    ) {
 
-                body: JSON.stringify({
-                    situation: situation
-                })
-            });
+        guidance =
+            "MEDICAL EMERGENCY\n\n" +
+            "1. Contact your local emergency services immediately.\n" +
+            "2. Stay with the affected person if it is safe to do so.\n" +
+            "3. If there is severe bleeding, apply firm pressure with clean cloth or gauze.\n" +
+            "4. Do not move the person unnecessarily unless there is immediate danger.\n" +
+            "5. Follow instructions given by emergency professionals.\n\n" +
+            "If the person is unconscious or not breathing normally, seek emergency medical assistance immediately.";
 
-        const data =
-            await response.json();
+    } else if (
+        text.includes("fire") ||
+        text.includes("smoke") ||
+        text.includes("burn")
+    ) {
 
-        if (data.error) {
+        guidance =
+            "FIRE EMERGENCY\n\n" +
+            "1. Move away from the fire and smoke immediately.\n" +
+            "2. Alert people nearby and contact the fire service.\n" +
+            "3. Use an exit route and avoid elevators.\n" +
+            "4. Do not return inside for belongings.\n" +
+            "5. If there is smoke, stay as low as possible while leaving.\n\n" +
+            "Do not attempt to fight a large or spreading fire yourself.";
 
-            responseBox.innerText =
-                "❌ " + data.error;
+    } else if (
+        text.includes("accident") ||
+        text.includes("crash") ||
+        text.includes("car")
+    ) {
 
-            return;
-        }
+        guidance =
+            "ACCIDENT EMERGENCY\n\n" +
+            "1. Move to a safe location if you can do so safely.\n" +
+            "2. Contact local emergency services.\n" +
+            "3. Check for immediate danger such as traffic, fire or leaking fuel.\n" +
+            "4. Do not move an injured person unless there is immediate danger.\n" +
+            "5. Provide emergency responders with your location and important details.";
 
-        responseBox.innerText =
-            "🤖 SafePulse AI\n\n" +
-            data.answer;
+    } else if (
+        text.includes("unsafe") ||
+        text.includes("danger") ||
+        text.includes("threat") ||
+        text.includes("attack")
+    ) {
 
-    } catch (error) {
+        guidance =
+            "PERSONAL SAFETY EMERGENCY\n\n" +
+            "1. Move toward a safe and populated location if possible.\n" +
+            "2. Contact local emergency services if you are in immediate danger.\n" +
+            "3. Avoid confronting the person causing the threat.\n" +
+            "4. Contact a trusted person and tell them where you are.\n" +
+            "5. Keep your phone available for emergency communication.";
 
-        responseBox.innerText =
-            "❌ Could not connect to SafePulse.";
+    } else {
+
+        guidance =
+            "GENERAL EMERGENCY GUIDANCE\n\n" +
+            "1. If you are in immediate danger, contact your local emergency services now.\n" +
+            "2. Move to a safe location if possible.\n" +
+            "3. Tell a trusted person what is happening.\n" +
+            "4. Share your location with emergency responders when appropriate.\n" +
+            "5. Follow instructions from trained emergency professionals.\n\n" +
+            "Describe the situation clearly to emergency responders so they can provide appropriate assistance.";
     }
+
+    responseBox.innerText =
+        "🤖 SafePulse Emergency Guidance\n\n" +
+        guidance;
 }
 
 
